@@ -1,116 +1,132 @@
-arct_ai_project/
-├── .gitignore               # Файл для Git, чтобы игнорировать ненужные файлы (данные, логи, env)
-├── README.md                # Описание проекта, инструкции по установке и запуску
-├── requirements.txt         # Список зависимостей Python (или pyproject.toml для Poetry/PDM)
-├── LICENSE                  # Лицензия проекта
-│
-├── config/                  # Конфигурационные файлы (не секретные)
-│   ├── settings.yaml        # Общие настройки приложения
-│   └── model_params.yaml    # Параметры для обучения моделей
-│
-├── data/                    # Все данные, связанные с проектом
-│   ├── raw/                 # Исходные, необработанные данные
-│   │   ├── meteo/           # Данные от метеослужб или локальной станции
-│   │   │   └── meteo_data_*.csv
-│   │   ├── dc_ops/          # Данные о работе ЦОД (BMS/DCIM)
-│   │   │   └── datacenter_ops_*.csv
-│   │   ├── arct_sensors/    # Данные с датчиков ARCT
-│   │   │   └── arct_sensor_data_*.csv
-│   │   └── sky_images/      # Изображения неба с камер
-│   │       └── timestamp_cam1.jpg
-│   │
-│   ├── processed/           # Обработанные, очищенные, объединенные данные
-│   │   └── combined_dataset_validated.parquet # Пример (parquet часто эффективнее CSV)
-│   │
-│   └── training/            # Данные, подготовленные специально для обучения моделей
-│       ├── tilt_prediction/ # Данные для модели предсказания угла
-│       │   ├── train.csv
-│       │   └── validation.csv
-│       ├── sky_analysis/    # Размеченные изображения неба
-│       │   ├── train/
-│       │   └── val/
-│       └── ...              # Подпапки для данных других моделей
-│
-├── docs/                    # Документация проекта
-│   ├── architecture.md      # Диаграмма архитектуры (например, с Mermaid)
-│   ├── setup.md             # Инструкции по настройке окружения
-│   ├── data_sources.md      # Описание источников данных
-│   └── model_cards/         # Документация по каждой модели (цель, данные, метрики)
-│       └── tilt_prediction.md
-│
-├── models/                  # Сохраненные обученные модели (артефакты)
-│   ├── tilt_prediction/
-│   │   └── v1.0/
-│   │       └── model.pkl    # Или .h5, .pt, .onnx и т.д.
-│   ├── sky_analysis/
-│   │   └── latest/
-│   │       └── model.h5
-│   ├── health_monitoring/
-│   └── ...                  # Папки для других моделей
-│
-├── notebooks/               # Jupyter-ноутбуки для исследований и экспериментов
-│   ├── 1_eda_meteo.ipynb    # Исследовательский анализ метеоданных
-│   ├── 2_prototype_tilt_model.ipynb # Прототипирование модели предсказания угла
-│   └── 3_results_visualization.ipynb # Визуализация результатов
-│
-├── src/                     # Основной исходный код приложения (пакет Python)
-│   ├── __init__.py
-│   │
-│   ├── data_processing/     # Модули для загрузки, очистки, трансформации данных
-│   │   ├── __init__.py
-│   │   ├── load_data.py
-│   │   └── preprocessing.py
-│   │
-│   ├── features/            # Создание признаков для моделей
-│   │   └── __init__.py
-│   │   └── build_features.py
-│   │
-│   ├── models/              # Код, связанный с моделями ИИ
-│   │   ├── __init__.py
-│   │   ├── prediction/      # Модели предсказания (угол, ТО, деградация)
-│   │   │   ├── __init__.py
-│   │   │   ├── tilt_predictor.py
-│   │   │   └── maintenance_predictor.py
-│   │   ├── monitoring/      # Модели мониторинга (аномалии)
-│   │   │   └── anomaly_detector.py
-│   │   └── vision/          # Модели компьютерного зрения (анализ неба)
-│   │       └── sky_analyzer.py
-│   │
-│   ├── training/            # Скрипты и пайплайны для обучения моделей
-│   │   ├── __init__.py
-│   │   ├── train_tilt_model.py
-│   │   └── train_sky_model.py
-│   │
-│   ├── orchestration/       # Логика управления и интеграции ("мозг" системы)
-│   │   ├── __init__.py
-│   │   └── control_loop.py
-│   │
-│   ├── interfaces/          # Код для взаимодействия с внешними системами
-│   │   ├── __init__.py
-│   │   ├── bms_interface.py
-│   │   ├── arct_actuator_interface.py
-│   │   └── weather_api_client.py
-│   │
-│   ├── api/                 # Если будет REST API для управления или мониторинга
-│   │   ├── __init__.py
-│   │   └── main.py          # (e.g., FastAPI, Flask)
-│   │   └── endpoints/
-│   │
-│   └── utils/               # Вспомогательные функции, константы, логирование
-│       ├── __init__.py
-│       └── logging_config.py
-│
-├── deployment/              # Файлы для развертывания
-│   ├── Dockerfile           # Dockerfile для сборки приложения
-│   ├── docker-compose.yml   # (Опционально) Для запуска нескольких контейнеров
-│   └── scripts/             # Скрипты для CI/CD или ручного развертывания
-│
-├── tests/                   # Автоматические тесты
-│   ├── __init__.py
-│   ├── test_data_processing.py
-│   ├── test_orchestration.py
-│   └── test_models/
-│       └── test_tilt_predictor.py
-│
-└── scripts/                 # Вспомогательные скрипты (запуск задач, обработка данных)
-    └── process_raw_data.sh
+```mermaid
+
+graph LR
+    %% --- Data Sources ---
+    subgraph Data Sources
+        WS[Weather Services API<br>(Forecast & Historical)]
+        LS[Local Sensors<br>(Meteo Station, Sky Camera)]
+        DCS[Data Center Sensors<br>(IT Load, Temp, Humidity, BMS/DCIM)]
+        AS[ARCT Sensors<br>(Surface Temp, Tilt, Status, Degradation?)]
+    end
+
+    %% --- Data Processing & Storage ---
+    subgraph Data Processing & Storage
+        DI[Data Ingestion & Validation]
+        DB[(Data Storage<br>Time-Series DB / Data Lake)]
+    end
+
+    %% --- AI Core ---
+    subgraph AI Core
+        TP[Model: Tilt Prediction<br>(Weather, Load -> Angle)]
+        SA[Model: Sky Analysis<br>(Image -> Clear Sky % / Direction)]
+        HM[Model: Health Monitoring<br>(ARCT Sensors -> Anomaly/Maint. Need)]
+        MD[Model: Material Degradation<br>(History, UV -> Lifespan/Efficiency)]
+        %% Placement Optimization is offline/design time, not shown in real-time loop
+        %% PO[Model: Placement Optimization (Design)]
+
+        %% Central Brain
+        subgraph AI Orchestrator
+            CTRL[AI Control Logic / Orchestrator]
+        end
+    end
+
+    %% --- Control & Actuation ---
+    subgraph Control & Actuation
+        AA[ARCT Actuators<br>(Tilt Motors)]
+        ECS[Existing Cooling Systems<br>(via BMS/DCIM: CRACs, Chillers, Liquid)]
+        BMS[(BMS / DCIM Interface)]
+    end
+
+    %% --- Physical Environment ---
+    subgraph Physical Environment
+        ARCT[ARCT Units (Physical)]
+        DC[Data Center Environment<br>(Internal Temperature)]
+    end
+
+    %% --- Outputs & Monitoring ---
+    subgraph Outputs & Monitoring
+        DASH[Reporting & Visualization Dashboard]
+        USER[Operator / User]
+        ALERT[Alerting System]
+        MT[(Maintenance Planning)]
+    end
+
+    %% --- Offline Processes ---
+    subgraph Offline Processes
+        TRAIN[Model Retraining & Updates]
+    end
+
+    %% --- Connections ---
+
+    %% Data Ingestion Flow
+    WS --> DI
+    LS --> DI
+    DCS --> DI
+    AS --> DI
+    DI --> DB
+
+    %% AI Models reading data
+    DB --> TP
+    DB --> SA  %% Historical data for training/context
+    LS -- Sky Camera Image --> SA %% Real-time image feed
+    DB --> HM
+    AS --> HM %% Real-time sensor feed
+    DB --> MD
+
+    %% AI Models feeding the Orchestrator
+    TP --> CTRL
+    SA --> CTRL
+    HM -- Current Status/Efficiency --> CTRL
+    MD -- Predicted Efficiency --> CTRL
+    DCS -- Real-time Load/Temp --> CTRL %% Direct feed for immediate response
+    WS -- Real-time/Short-term Forecast --> CTRL
+
+    %% Orchestrator sending commands
+    CTRL -- Tilt Commands --> AA
+    CTRL -- Cooling Mode Commands --> BMS
+
+    %% Control influencing physical systems
+    AA --> ARCT
+    BMS --> ECS
+
+    %% Physical systems influencing environment & sensors (Feedback Loop)
+    ARCT -- Cooling Effect --> DC
+    ECS -- Cooling Effect --> DC
+    DC -- Measured Temp --> DCS
+    ARCT -- Measured State --> AS
+
+    %% Reporting and User Interaction
+    DB --> DASH
+    CTRL -- System Status --> DASH
+    HM -- Anomaly Alerts --> ALERT
+    MD -- Degradation Forecast --> MT
+    HM -- Maintenance Needs --> MT
+    ALERT --> USER
+    DASH --> USER
+    USER -- Queries/Overrides? --> CTRL %% Optional override path
+
+    %% Offline Training Loop
+    DB -- Historical Data --> TRAIN
+    TRAIN -- Updated Models --> TP
+    TRAIN -- Updated Models --> SA
+    TRAIN -- Updated Models --> HM
+    TRAIN -- Updated Models --> MD
+
+    %% Style definitions
+    classDef datasrc fill:#cde4ff,stroke:#333,stroke-width:2px;
+    classDef dataproc fill:#ccffcc,stroke:#333,stroke-width:2px;
+    classDef aicore fill:#fff0cc,stroke:#333,stroke-width:2px;
+    classDef control fill:#ffcccc,stroke:#333,stroke-width:2px;
+    classDef physical fill:#e0e0e0,stroke:#333,stroke-width:2px;
+    classDef output fill:#e6ccff,stroke:#333,stroke-width:2px;
+    classDef offline fill:#f5f5f5,stroke:#666,stroke-width:1px,stroke-dasharray: 5 5;
+
+    class WS,LS,DCS,AS datasrc;
+    class DI,DB dataproc;
+    class TP,SA,HM,MD,CTRL aicore;
+    class AA,ECS,BMS control;
+    class ARCT,DC physical;
+    class DASH,USER,ALERT,MT output;
+    class TRAIN offline;
+
+```
