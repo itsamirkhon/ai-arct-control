@@ -3,14 +3,14 @@
 graph LR
     %% --- Data Sources ---
     subgraph Data Sources
-        WS[Weather Services API<br>(Forecast & Historical)]
+        WS[Weather Services API<br>(Forecast and Historical)] %% Corrected line
         LS[Local Sensors<br>(Meteo Station, Sky Camera)]
         DCS[Data Center Sensors<br>(IT Load, Temp, Humidity, BMS/DCIM)]
         AS[ARCT Sensors<br>(Surface Temp, Tilt, Status, Degradation?)]
     end
 
     %% --- Data Processing & Storage ---
-    subgraph Data Processing & Storage
+    subgraph Data Processing and Storage
         DI[Data Ingestion & Validation]
         DB[(Data Storage<br>Time-Series DB / Data Lake)]
     end
@@ -31,7 +31,7 @@ graph LR
     end
 
     %% --- Control & Actuation ---
-    subgraph Control & Actuation
+    subgraph Control and Actuation
         AA[ARCT Actuators<br>(Tilt Motors)]
         ECS[Existing Cooling Systems<br>(via BMS/DCIM: CRACs, Chillers, Liquid)]
         BMS[(BMS / DCIM Interface)]
@@ -44,7 +44,7 @@ graph LR
     end
 
     %% --- Outputs & Monitoring ---
-    subgraph Outputs & Monitoring
+    subgraph Outputs and Monitoring
         DASH[Reporting & Visualization Dashboard]
         USER[Operator / User]
         ALERT[Alerting System]
