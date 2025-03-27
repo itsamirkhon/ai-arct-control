@@ -3,24 +3,24 @@
 graph LR
     %% --- Data Sources ---
     subgraph Data Sources
-        WS[Weather Services API<br>(Forecast and Historical)] %% Corrected line
-        LS[Local Sensors<br>(Meteo Station, Sky Camera)]
-        DCS[Data Center Sensors<br>(IT Load, Temp, Humidity, BMS/DCIM)]
-        AS[ARCT Sensors<br>(Surface Temp, Tilt, Status, Degradation?)]
+        WS[Weather Services API\n(Forecast and Historical)]
+        LS[Local Sensors\n(Meteo Station, Sky Camera)]
+        DCS[Data Center Sensors\n(IT Load, Temp, Humidity, BMS/DCIM)]
+        AS[ARCT Sensors\n(Surface Temp, Tilt, Status, Degradation?)]
     end
 
     %% --- Data Processing & Storage ---
     subgraph Data Processing and Storage
         DI[Data Ingestion & Validation]
-        DB[(Data Storage<br>Time-Series DB / Data Lake)]
+        DB[(Data Storage\nTime-Series DB / Data Lake)]
     end
 
     %% --- AI Core ---
     subgraph AI Core
-        TP[Model: Tilt Prediction<br>(Weather, Load -> Angle)]
-        SA[Model: Sky Analysis<br>(Image -> Clear Sky % / Direction)]
-        HM[Model: Health Monitoring<br>(ARCT Sensors -> Anomaly/Maint. Need)]
-        MD[Model: Material Degradation<br>(History, UV -> Lifespan/Efficiency)]
+        TP[Model: Tilt Prediction\n(Weather, Load -> Angle)]
+        SA[Model: Sky Analysis\n(Image -> Clear Sky % / Direction)]
+        HM[Model: Health Monitoring\n(ARCT Sensors -> Anomaly/Maint. Need)]
+        MD[Model: Material Degradation\n(History, UV -> Lifespan/Efficiency)]
         %% Placement Optimization is offline/design time, not shown in real-time loop
         %% PO[Model: Placement Optimization (Design)]
 
@@ -32,15 +32,15 @@ graph LR
 
     %% --- Control & Actuation ---
     subgraph Control and Actuation
-        AA[ARCT Actuators<br>(Tilt Motors)]
-        ECS[Existing Cooling Systems<br>(via BMS/DCIM: CRACs, Chillers, Liquid)]
+        AA[ARCT Actuators\n(Tilt Motors)]
+        ECS[Existing Cooling Systems\n(via BMS/DCIM: CRACs, Chillers, Liquid)]
         BMS[(BMS / DCIM Interface)]
     end
 
     %% --- Physical Environment ---
     subgraph Physical Environment
         ARCT[ARCT Units (Physical)]
-        DC[Data Center Environment<br>(Internal Temperature)]
+        DC[Data Center Environment\n(Internal Temperature)]
     end
 
     %% --- Outputs & Monitoring ---
@@ -128,5 +128,4 @@ graph LR
     class ARCT,DC physical;
     class DASH,USER,ALERT,MT output;
     class TRAIN offline;
-
 ```
